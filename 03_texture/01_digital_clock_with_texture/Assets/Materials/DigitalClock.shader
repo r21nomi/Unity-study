@@ -55,26 +55,33 @@
 
             float2 getTime(float2 uv, float number)
             {
-                float divide = 2.0;
+                float divide = 4.0;
                 float2 uvOrigin = uv;
 
                 uv.x = fmod(uv.x * divide, 1);
-                float firstNum = floor(number / 10);
-                float secondNum = floor(frac(number / 10) * 10);
 
-                float2 num1 = getNumber(uv, firstNum);  // 1st number
-                float2 num2 = getNumber(uv, secondNum);  // 2nd number
-
-                float digitStep = 1.0 / divide;
-                float2 num = num2;
-
-                if (uvOrigin.x < digitStep)
+                float2 result = float2(0, 0);
+                // Left digit to right digit (i == 0 is 1st digit)
+                for (int i = divide - 1; i >= 0; i--)
                 {
-                    // First number
-                    num = num1;
+                    float p = pow(10, i);
+                    float num = 0;
+                    if (i == 0)
+                    {
+                        // 1st digit
+                        num = floor(frac(number / 10) * 10);
+                    } else
+                    {
+                        num = floor(number / p);
+                    }
+                    float digitStep = 1.0 / divide;
+                    if (uvOrigin.x > digitStep * (divide - i - 1))
+                    {
+                        result = getNumber(uv, num);
+                    }
                 }
 
-                return num;
+                return result;
             }
 
             fixed4 frag (v2f i) : SV_Target
