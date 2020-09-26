@@ -47,39 +47,39 @@
 
             float2 getNumber(float2 uv, float number)
             {
+                float2 step = float2(1.0 / _CharacterCount_X, 1.0 / _CharacterCount_Y);
+                float x = uv.x / _CharacterCount_X + step.x * (fmod(number, _CharacterCount_X));
+                float y = uv.y / _CharacterCount_Y + step.y * (1.0 - fmod(floor(number / _CharacterCount_X), _CharacterCount_Y));
+                return float2(x, y);
+            }
+
+            float2 getTime(float2 uv, float number)
+            {
                 float divide = 2.0;
                 float2 uvOrigin = uv;
 
                 uv.x = fmod(uv.x * divide, 1);
                 float firstNum = floor(number / 10);
                 float secondNum = floor(frac(number / 10) * 10);
-                float2 step = float2(1.0 / _CharacterCount_X, 1.0 / _CharacterCount_Y);
 
-                // 1st number
-                float x1 = uv.x / _CharacterCount_X + step.x * (fmod(firstNum, _CharacterCount_X));
-                float y1 = uv.y / _CharacterCount_Y + step.y * (1.0 - fmod(floor(firstNum / _CharacterCount_X), _CharacterCount_Y));
-
-                // 2nd number
-                float x2 = uv.x / _CharacterCount_X + step.x * (fmod(secondNum, _CharacterCount_X));
-                float y2 = uv.y / _CharacterCount_Y + step.y * (1.0 - fmod(floor(secondNum / _CharacterCount_X), _CharacterCount_Y));
+                float2 num1 = getNumber(uv, firstNum);  // 1st number
+                float2 num2 = getNumber(uv, secondNum);  // 2nd number
 
                 float digitStep = 1.0 / divide;
-                float x = x2;
-                float y = y2;
+                float2 num = num2;
 
                 if (uvOrigin.x < digitStep)
                 {
                     // First number
-                    x = x1;
-                    y = y1;
+                    num = num1;
                 }
 
-                return float2(x, y);
+                return num;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float2 t = getNumber(i.uv, _Time.y);
+                float2 t = getTime(i.uv, _Time.y);
                 float4 col = tex2D(_TexChars, t);
                 return col;
             }
