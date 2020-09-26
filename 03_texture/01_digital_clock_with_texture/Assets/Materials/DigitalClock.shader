@@ -5,6 +5,7 @@
         _TexChars ("Characters", 2D) = "white" {}
         _CharacterCount_X ("CharacterCount_X", Float) = 8
         _CharacterCount_Y ("CharacterCount_Y", Float) = 2
+        _Divide ("Divide", Float) = 4
     }
     SubShader
     {
@@ -35,6 +36,7 @@
             float4 _TexChars_ST;
             float _CharacterCount_X;
             float _CharacterCount_Y;
+            float _Divide;
 
             v2f vert (appdata v)
             {
@@ -55,14 +57,13 @@
 
             float2 getTime(float2 uv, float number)
             {
-                float divide = 4.0;
                 float2 uvOrigin = uv;
 
-                uv.x = fmod(uv.x * divide, 1);
+                uv.x = fmod(uv.x * _Divide, 1);
 
                 float2 result = float2(0, 0);
                 // Left digit to right digit (i == 0 is 1st digit)
-                for (int i = divide - 1; i >= 0; i--)
+                for (int i = _Divide - 1; i >= 0; i--)
                 {
                     float p = pow(10, i);
                     float num = 0;
@@ -74,8 +75,8 @@
                     {
                         num = floor(number / p);
                     }
-                    float digitStep = 1.0 / divide;
-                    if (uvOrigin.x > digitStep * (divide - i - 1))
+                    float digitStep = 1.0 / _Divide;
+                    if (uvOrigin.x > digitStep * (_Divide - i - 1))
                     {
                         result = getNumber(uv, num);
                     }
