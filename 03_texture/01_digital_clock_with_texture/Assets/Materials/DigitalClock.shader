@@ -50,17 +50,17 @@
                 float divide = 2.0;
                 float2 uvOrigin = uv;
 
-                uv.x = fmod(uv.x * divide, divide);
+                uv.x = fmod(uv.x * divide, 1);
                 float firstNum = floor(number / 10);
                 float secondNum = floor(frac(number / 10) * 10);
                 float2 step = float2(1.0 / _CharacterCount_X, 1.0 / _CharacterCount_Y);
 
                 // 1st number
-                float x1 = uv.x / _CharacterCount_X + step.x * (fmod(firstNum, _CharacterCount_X) - 0);
+                float x1 = uv.x / _CharacterCount_X + step.x * (fmod(firstNum, _CharacterCount_X));
                 float y1 = uv.y / _CharacterCount_Y + step.y * (1.0 - fmod(floor(firstNum / _CharacterCount_X), _CharacterCount_Y));
 
                 // 2nd number
-                float x2 = uv.x / _CharacterCount_X + step.x * (fmod(secondNum, _CharacterCount_X) - 1);
+                float x2 = uv.x / _CharacterCount_X + step.x * (fmod(secondNum, _CharacterCount_X));
                 float y2 = uv.y / _CharacterCount_Y + step.y * (1.0 - fmod(floor(secondNum / _CharacterCount_X), _CharacterCount_Y));
 
                 float digitStep = 1.0 / divide;
